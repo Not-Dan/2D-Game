@@ -20,6 +20,7 @@ public class MainMenu extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
         stage.setTitle("2D Game");
+		stage.setResizable(false);
         stage.setScene(createMainMenu());
         stage.show();
 	}
