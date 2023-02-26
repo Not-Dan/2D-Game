@@ -18,6 +18,9 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import settings.UserSettings;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -28,6 +31,9 @@ public class MainMenu extends Application {
 	public void start(Stage stage) throws Exception {
         stage.setTitle("2D Game");
 		stage.setResizable(false);
+		stage.setFullScreenExitHint("");
+		ReadSettingsFromFile();
+		stage.setFullScreen(UserSettings.getIsFullScreenEnabled());
         stage.setScene(createMainMenu());
         stage.show();
 	}
@@ -73,7 +79,6 @@ public class MainMenu extends Application {
             public void handle(ActionEvent e)
             {
                 // Create a scene using the fxml file and switch to it
-
 				/*
 				I don't know the best practices of JavaFX, but I think
 				we should create a SceneManager class and use it to
@@ -123,4 +128,40 @@ public class MainMenu extends Application {
 	    return new Scene(vb);
 
 	}
+
+	//This feels very very bad but its a starting point and can be revised. I don't have much experience
+	//with how games store data so please feel free to revise or rewrite
+	//This function reads lines and separates them based on the commas and closing bracket
+	//It then tests if those substrings contain the setting parameter and if they do, they set the
+	//parameter and remove that part of the string from the line.
+	private void ReadSettingsFromFile() throws Exception{
+		File configFile = new File("settings.cfg");
+		BufferedReader reader = new BufferedReader(new FileReader(configFile));
+		String settingsLine;
+		String requiredReadAttributes[] = {
+				"volume",
+				"isFullScreen",
+				"isVSyncEnabled"
+		};
+		while((settingsLine = reader.readLine()) != null){
+			int it = 0;
+			for(int i = 0; i < requiredReadAttributes.length; i++){
+				String newAttribute = settingsLine.substring(it, settingsLine.indexOf(i < requiredReadAttributes.length - 1 ? "," : "}"));
+
+				if(newAttribute.contains("volume")){
+					UserSettings.setGameVolume(Integer.parseInt(newAttribute.substring(newAttribute.indexOf(":") + 1)));
+				}else if(newAttribute.contains("isFullScreen")){
+					UserSettings.setIsFullScreenEnabled(Boolean.parseBoolean((newAttribute.substring(newAttribute.indexOf(":") + 1))));
+				}else if(newAttribute.contains("isVSyncEnabled")){
+					UserSettings.setIsVSyncEnabled(Boolean.parseBoolean((newAttribute.substring(newAttribute.indexOf(":") + 1))));
+				}
+				settingsLine = settingsLine.replace(newAttribute + ",", "");
+			}
+		}
+		System.out.println("Settings read from memory:\nVolume: " + UserSettings.getGameVolume()+
+				"\nisFullScreen: " + UserSettings.getIsFullScreenEnabled() +
+				"\nisVSyncEnabled: " + UserSettings.getIsVSyncEnabled());
+	}
+
+
 }
