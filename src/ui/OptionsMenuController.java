@@ -80,7 +80,7 @@ public class OptionsMenuController {
         stage.show();
     }
 
-    private void WriteSettingsToFile() throws IOException {
+    public static void WriteSettingsToFile() throws IOException {
         File configFile = new File("settings.cfg");
         BufferedWriter writer = new BufferedWriter(new FileWriter(configFile));
         writer.write("{" + "\"volume\":" + UserSettings.getGameVolume() +

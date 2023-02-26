@@ -135,9 +135,15 @@ public class MainMenu extends Application {
 	//It then tests if those substrings contain the setting parameter and if they do, they set the
 	//parameter and remove that part of the string from the line.
 	private void ReadSettingsFromFile() throws Exception{
+
 		File configFile = new File("settings.cfg");
+		if(!configFile.isFile()){
+			OptionsMenuController.WriteSettingsToFile();
+			return;
+		}
 		BufferedReader reader = new BufferedReader(new FileReader(configFile));
 		String settingsLine;
+
 		//We never actually read from this aside from its length, but it might come in handy in the future
 		String[] requiredReadAttributes = {
 				"volume",
