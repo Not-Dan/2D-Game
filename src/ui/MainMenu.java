@@ -72,7 +72,7 @@ public class MainMenu extends Application {
             public void handle(ActionEvent e)
             {
                 // @TODO Open Game
-                
+
             }
         });
 		optionsBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -129,7 +129,7 @@ public class MainMenu extends Application {
 
 	}
 
-	//This feels very very bad but its a starting point and can be revised. I don't have much experience
+	//This feels very, very bad, but it's a starting point and can be revised. I don't have much experience
 	//with how games store data so please feel free to revise or rewrite
 	//This function reads lines and separates them based on the commas and closing bracket
 	//It then tests if those substrings contain the setting parameter and if they do, they set the
@@ -138,15 +138,16 @@ public class MainMenu extends Application {
 		File configFile = new File("settings.cfg");
 		BufferedReader reader = new BufferedReader(new FileReader(configFile));
 		String settingsLine;
-		String requiredReadAttributes[] = {
+		//We never actually read from this aside from its length, but it might come in handy in the future
+		String[] requiredReadAttributes = {
 				"volume",
 				"isFullScreen",
 				"isVSyncEnabled"
 		};
 		while((settingsLine = reader.readLine()) != null){
-			int it = 0;
+
 			for(int i = 0; i < requiredReadAttributes.length; i++){
-				String newAttribute = settingsLine.substring(it, settingsLine.indexOf(i < requiredReadAttributes.length - 1 ? "," : "}"));
+				String newAttribute = settingsLine.substring(0, settingsLine.indexOf(i < requiredReadAttributes.length - 1 ? "," : "}"));
 
 				if(newAttribute.contains("volume")){
 					UserSettings.setGameVolume(Integer.parseInt(newAttribute.substring(newAttribute.indexOf(":") + 1)));
