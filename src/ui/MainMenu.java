@@ -3,8 +3,10 @@ package ui;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -14,6 +16,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import settings.UserSettings;
+
+import java.io.IOException;
+import java.util.Objects;
+
 
 public class MainMenu extends Application {
 
@@ -25,9 +32,12 @@ public class MainMenu extends Application {
         stage.show();
 	}
 	
-	private Scene createMainMenu() {
+	public static Scene createMainMenu() {
+
 		GridPane inner = new GridPane();
 		GridPane outer = new GridPane();
+
+
 
 		inner.setHgap(10);
 		inner.setVgap(3);
@@ -62,7 +72,29 @@ public class MainMenu extends Application {
 		optionsBtn.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
-                // @TODO Open Options Menu
+                // Create a scene using the fxml file and switch to it
+
+				/*
+				I don't know the best practices of JavaFX, but I think
+				we should create a SceneManager class and use it to
+				switch our scenes in the future because this looks a little messy
+				*/
+				Parent root;
+				try {
+					root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ui/OptionsMenu.fxml")));
+				} catch (IOException ex) {
+					throw new RuntimeException(ex);
+				}
+				Stage stage = (Stage) optionsBtn.getScene().getWindow();
+				Scene scene = new Scene(root);
+				stage.setScene(scene);
+				//We have to set stage.setFullScreen every time we switch our scene to maintain the player setting
+				//this is stupid. It feels like a hack and causes this wierd stuttering when switching scenes if in
+				//fullscreen because the stage briefly reverts back to its original resolution before returning to
+				//fullscreen. Hopefully there's a way to simply preserve stage.setFullScreen so we don't have to set
+				//it every time.
+				stage.setFullScreen(UserSettings.getIsFullScreenEnabled());
+				stage.show();
             }
         });
 		exitBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -88,7 +120,7 @@ public class MainMenu extends Application {
 	    vb.setPadding(new Insets(10, 25, 25, 25));
 	    vb.getChildren().add(outer);
 
-	    Scene scene = new Scene(vb);
-		return scene;
+	    return new Scene(vb);
+
 	}
 }
