@@ -15,5 +15,5 @@ We're just making a game
 
 ## Build and run via Gradle
 - No need to download JavaFX, just run the commands. Gradle will handle the rest
-  - Windows (Powershell) in the directory of the repository .\gradlew run
-  - Linux in the directory of the repository ./gradlew run
+  - Windows (Powershell): in the directory of the repository .\gradlew run
+  - Linux: in the directory of the repository ./gradlew run
