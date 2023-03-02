@@ -12,14 +12,7 @@ import utility.Vector2;
 public class Map {
 
 
-    class Tile{
-        Vector2<Float> globalPosition;
-        Vector2<Float> tilemapPosition;
 
-        //texCoord?
-        int id;
-
-    }
 
     String mapTilesetPath;
 

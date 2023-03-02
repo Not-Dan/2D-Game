@@ -5,30 +5,22 @@ package game.map;
 //Perhaps we should create a new debug package and store this class there
 
 
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import utility.Vector2;
 
 
-import java.net.MalformedURLException;
-import java.net.URL;
 
-import static java.lang.Math.floor;
+//Created by Jahrr on 3/2/23
 
 //This is our tilemap editor contained in a class. It should contain a accessible scene
 //that can be run in debug to edit our maps. We should be able to load multiple tilemaps,
@@ -46,7 +38,10 @@ public class MapCreator
     //To NatureTileset.png
     String path = "";
 
+    //"Selected" texture coordinates
+    //This should be the same as the last pressed button's texture coordinates
     Vector2<Integer> currentTexCoords = new Vector2<Integer>(0,0);
+    //How we align the buttons
     GridPane selectorGrid = new GridPane();
     public void createEditor(Stage MenuStage) {
 
@@ -56,9 +51,10 @@ public class MapCreator
         Scene editorScene = new Scene(tileSelectorAlign, 800, 600);
         editorStage.setTitle("Tilemap Editor");
 
+        //Test for image loading
         //Image tileset = new Image(path);
         //ImageView imageView = new ImageView(tileset);
-        //root.getChildren().add(imageView);
+
 
         editorStage.setScene(editorScene);
 
@@ -88,12 +84,17 @@ public class MapCreator
         ToggleGroup buttonGroup = new ToggleGroup();
         for(Integer i = 0; i < 200; i++){
 
-            ToggleButton button = new ToggleButton(i.toString());
+            TileToggleButton button = new TileToggleButton(i.toString(), new Vector2<>(i%gridSize, (i/gridSize)));
 
             button.setMinWidth(30);
             button.setMaxWidth(30);
             button.setToggleGroup(buttonGroup);
             selectorGrid.add(button, i%gridSize, (i/gridSize));
+
+            button.setOnAction(actionEvent -> {
+
+                System.out.println(button.textureCoordinates.returnVectorString());
+            });
 
         }
 
