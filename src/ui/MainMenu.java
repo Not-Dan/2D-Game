@@ -94,16 +94,9 @@ public class MainMenu extends Application {
 		vb.getChildren().add(outer);
 
 		Scene scene = new Scene(vb);
-		scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent event) {
-				if (event.getCode() == KeyCode.F1) {
-					try {
-						editor.createEditor(stage);
-					} catch (MalformedURLException e) {
-						throw new RuntimeException(e);
-					}
-				}
+		scene.setOnKeyReleased(event -> {
+			if (event.getCode() == KeyCode.F1) {
+					editor.createEditor(stage);
 			}
 		});
 		return scene;
