@@ -14,6 +14,6 @@ We're just making a game
 - https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
 
 ## Build and run via Gradle
-- No need to download JavaFX, just run the commands Gradle will handle the rest
+- No need to download JavaFX, just run the commands. Gradle will handle the rest
   - Windows (Powershell) in the directory of the repository .\gradlew run
   - Linux in the directory of the repository ./gradlew run
