@@ -1,0 +1,18 @@
+package utility;
+
+
+public class Vector2 <T>{
+
+    public T x;
+    public T y;
+
+    Vector2(){
+
+    }
+    Vector2(T val1, T val2){
+        x = val1;
+        y = val2;
+    }
+
+
+}
