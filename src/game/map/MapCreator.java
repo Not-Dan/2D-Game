@@ -9,12 +9,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import utility.Vector2;
 
@@ -36,11 +35,11 @@ public class MapCreator
 
     //someone get this relative path right please
     //To NatureTileset.png
-    String path = "";
-
+    String path = "C:\\Users\\minri\\IdeaProjects\\Game_Dev\\2D-Game\\res\\tilesets\\NatureTileset.png";
+    //String relativePath = "..\\..\\..\\res\\tilesets\\NatureTileset.png";
     //"Selected" texture coordinates
     //This should be the same as the last pressed button's texture coordinates
-    Vector2<Integer> currentTexCoords = new Vector2<Integer>(0,0);
+    Vector2<Integer> currentTexCoords = new Vector2<>(0,0);
     //How we align the buttons
     GridPane selectorGrid = new GridPane();
     public void createEditor(Stage MenuStage) {
@@ -52,7 +51,7 @@ public class MapCreator
         editorStage.setTitle("Tilemap Editor");
 
         //Test for image loading
-        //Image tileset = new Image(path);
+
         //ImageView imageView = new ImageView(tileset);
 
 
@@ -63,7 +62,7 @@ public class MapCreator
         selectorGrid.setVgap(2);
         selectorGrid.setPadding(new Insets(5,5,5,5));
         populateTileSelection();
-        
+
         //set up tile selector
         tileSelectorAlign.setAlignment(Pos.BOTTOM_CENTER);
         tileSelectorAlign.setPadding(new Insets(10,10,10,10));
@@ -80,22 +79,55 @@ public class MapCreator
     private void populateTileSelection(){
         //Placeholder population method; Load from tileset in the future
         //use Button.setGraphic(ImageView)
-        int gridSize = 23;
+        Vector2<Integer> tilesetSize = new Vector2<>(641, 288);
+        int tileSize = 32;
+        Image tileset = new Image(path);
+
+
+
         ToggleGroup buttonGroup = new ToggleGroup();
-        for(Integer i = 0; i < 200; i++){
 
-            TileToggleButton button = new TileToggleButton(i.toString(), new Vector2<>(i%gridSize, (i/gridSize)));
 
-            button.setMinWidth(30);
-            button.setMaxWidth(30);
-            button.setToggleGroup(buttonGroup);
-            selectorGrid.add(button, i%gridSize, (i/gridSize));
 
-            button.setOnAction(actionEvent -> {
+        int it = 0;
 
-                System.out.println(button.textureCoordinates.returnVectorString());
-            });
+        for(int y=0; y<tilesetSize.y - tileSize; y+=tileSize)
+        {
+            for(int x=0; x<tilesetSize.x - tileSize; x+=tileSize)
+            {
 
+                PixelReader reader = tileset.getPixelReader();
+                WritableImage newImage = new WritableImage(reader, x, y, tileSize, tileSize);
+                PixelReader tileValidationReader = newImage.getPixelReader();
+
+                boolean validFlag = false;
+                System.out.println("Tile number: " + it);
+                for(int ty = 0; ty < tileSize; ty+=4){
+                    for(int tx = 0; tx < tileSize; tx+=4){
+                        if(!tileValidationReader.getColor(tx,ty).equals(Color.TRANSPARENT)){
+                            validFlag = true;
+                            break;
+                        }
+                    }
+                    if(validFlag)
+                        break;
+                }
+                if(validFlag)
+                {
+                    TileToggleButton button = new TileToggleButton("", new Vector2<>(x,y));
+                    button.setMinWidth(60);
+                    button.setMaxWidth(60);
+                    button.setToggleGroup(buttonGroup);
+                    selectorGrid.add(button, it%11, it/11);
+                    button.setGraphic(new ImageView(newImage));
+                    button.setOnAction(actionEvent -> {
+                        currentTexCoords = button.textureCoordinates;
+                        System.out.println(currentTexCoords.returnVectorString());
+                    });
+                    it++;
+                }
+
+            }
         }
 
     }
