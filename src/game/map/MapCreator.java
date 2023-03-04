@@ -24,7 +24,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import utility.Vector2;
+
+import java.io.*;
 import java.util.*;
+import java.util.jar.Attributes;
 
 
 //Created by Jahrr on 3/2/23
@@ -61,9 +64,10 @@ public class MapCreator
     //How we align the buttons
     BorderPane borderPane = new BorderPane();
     GridPane selectorGrid = new GridPane();
-    public void createEditor(Stage MenuStage) {
+    public void createEditor(Stage MenuStage) throws IOException {
 
         System.out.println("Starting Editor...");
+
         Stage editorStage = new Stage();
 
         VBox tileSelectorAlign = new VBox();
@@ -81,6 +85,7 @@ public class MapCreator
                     "an absolute path to the tileset.");
             System.exit(-1);
         }
+        loadMapToEditor("tilemap.tmap");
 
 
         editorStage.setScene(editorScene);
@@ -197,6 +202,11 @@ public class MapCreator
             if(keyEvent.getCode() == KeyCode.SLASH){
                 System.out.println("Number of Values: " + tileMap.size());
             }
+            try {
+                saveMap("tilemap.tmap");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
 
     }
@@ -233,6 +243,42 @@ public class MapCreator
         tileMap.remove(new Vector2<>(position.x.intValue() / tileSize, position.y.intValue() / tileSize));
     }
 
+    //I'm using semicolons instead of commas as the separating character because commas in the vector screws with the
+    //substring when loading
+    private void saveMap(String path) throws IOException {
+        //Implement variable save path through UI
+        File configFile = new File(path);
+        BufferedWriter writer = new BufferedWriter(new FileWriter(configFile));
+        for(Map.Entry<Vector2<Integer>, Tile> tile : tileMap.entrySet()) {
+            writer.write("{tilemapPosition:" + tile.getValue().tilemapPosition.returnVectorString() +
+                             "; globalPosition:" + tile.getValue().globalPosition.returnVectorString() +
+                             "; textureCoordinates:" + tile.getValue().textureCoordinates.returnVectorString() +
+                            "; layer:" + tile.getValue().layer + "}\n");
+
+        }
+        writer.close();
+    }
+
+
+    private void loadMapToEditor(String path) throws IOException {
+        GameMap readMap = GameMap.loadMap(path);
+
+        for(Map.Entry<Vector2<Integer>, Tile> tile : readMap.getTileMap().entrySet()){
+            //We have to use this wierd hack instead of just putting tilemap = readMap.getTileMap()
+            //I don't know why, but I think it has to do with the java equality checking system
+            //see MapCreator.removeTile(String position)
+            tileMap.put(new Vector2<>(tile.getKey().x, tile.getKey().y), tile.getValue());
+            PixelReader reader = tileset.getPixelReader();
+            WritableImage newImage = new WritableImage(reader, tile.getValue().textureCoordinates.x, tile.getValue().textureCoordinates.y, tileSize, tileSize);
+            Rectangle drawnRect = new Rectangle(tile.getValue().globalPosition.x, tile.getValue().globalPosition.y,
+                    tileSize, tileSize);
+            drawnRect.setFill(new ImagePattern(newImage));
+            drawnRect.setUserData(new Vector2<>(Double.valueOf(tile.getValue().globalPosition.x), Double.valueOf(tile.getValue().globalPosition.y)));
+            tiles.getChildren().add(drawnRect);
+        }
+    }
+
+
     //If someone wants to implement a non-linear search algorithm that has better than O(n) complexity feel free to do so
     Node FindRectangleByPosition(Vector2<Double> position){
         for(Node i : tiles.getChildren()){
@@ -255,7 +301,6 @@ public class MapCreator
         }
         return layer;
     }
-
 
 
 }

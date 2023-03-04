@@ -16,9 +16,15 @@ public class Vector2 <T>{
         hashCode = Objects.hash(x,y);
     }
     public String returnVectorString(){
-        return x + ", " + y;
+        return "[" + x + ", " + y + "]";
     }
 
+    public static Vector2<Integer> getVectorFromString(String vectorString){
+        Vector2<Integer> vector = new Vector2<>();
+        vector.x = Integer.valueOf(vectorString.substring(1, vectorString.indexOf(",")));
+        vector.y = Integer.valueOf(vectorString.substring(vectorString.indexOf(",") + 2, vectorString.indexOf("]")));
+        return vector;
+    }
 
 
     //These two methods are necessary for our map (Hashmap)

@@ -18,6 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 
 public class MainMenu extends Application {
@@ -96,7 +97,11 @@ public class MainMenu extends Application {
 		Scene scene = new Scene(vb);
 		scene.setOnKeyReleased(event -> {
 			if (event.getCode() == KeyCode.F1) {
+				try {
 					editor.createEditor(stage);
+				} catch (IOException e) {
+					System.out.println("Something went wrong...");
+				}
 			}
 		});
 		return scene;
