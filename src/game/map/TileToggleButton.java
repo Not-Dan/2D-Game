@@ -1,7 +1,11 @@
 package game.map;
 
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import utility.Vector2;
+
+import java.awt.*;
 
 
 //Created by Jahrr on 3/2/22
@@ -15,9 +19,11 @@ public class TileToggleButton extends ToggleButton {
 
 
     public Vector2<Integer> textureCoordinates;
+    public WritableImage tileImage;
 
-    public TileToggleButton(String name, Vector2<Integer> texCoords) {
-        super(name);
+    public TileToggleButton(WritableImage buttonImage, Vector2<Integer> texCoords) {
         textureCoordinates = texCoords;
+        tileImage = buttonImage;
+        setGraphic(new ImageView(tileImage));
     }
 }
