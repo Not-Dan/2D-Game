@@ -45,8 +45,10 @@ public class MapCreator
 {
 
     //someone get this relative path right please
+	//Done it;) @AdamLaine
+	//use this "file:" to make it use the relative path
     //To NatureTileset.png
-    String tilesetPath = "";
+    String tilesetPath = "file:res//tilesets//NatureTileset.png";
 
     Vector2<Integer> tilesetSize = new Vector2<>(641, 288);
     int tileSize = 32;
@@ -59,10 +61,18 @@ public class MapCreator
     Map<Vector2<Integer>, Tile> tileMap = new HashMap<>();
 
     //How we align the buttons
-    BorderPane borderPane = new BorderPane();
+    
     GridPane selectorGrid = new GridPane();
+    
     public void createEditor(Stage MenuStage) {
-
+    	
+    	/*
+    	 * the borderPane if defined globally in the class is not freed when we finish working with 
+    	 * the editor, thus putting it here instead and changing the setupTilePainting it is created and deleted
+    	 * each time we are calling the createEditor function
+    	 */
+    	
+    	BorderPane borderPane = new BorderPane();
         System.out.println("Starting Editor...");
         Stage editorStage = new Stage();
 
@@ -105,7 +115,7 @@ public class MapCreator
         //borderPane.setCenter(currentTileRect);
 
 
-        setupTilePainting();
+        setupTilePainting(borderPane);
 
 
         editorStage.show();
@@ -158,7 +168,7 @@ public class MapCreator
 
     }
 
-    private void setupTilePainting(){
+    private void setupTilePainting(BorderPane borderPane){
 
         borderPane.setOnMouseMoved(mouseEvent -> {
             if(mouseEvent.getSceneY() < 470) {
@@ -200,7 +210,6 @@ public class MapCreator
         });
 
     }
-
 
     private void putTile(Vector2<Double> position){
         Rectangle drawnRect = new Rectangle(position.x, position.y,
@@ -255,7 +264,5 @@ public class MapCreator
         }
         return layer;
     }
-
-
 
 }
